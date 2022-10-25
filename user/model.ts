@@ -11,7 +11,8 @@ export type User = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   username: string;
   password: string;
-  dateJoined: Date;
+  following: Array<Types.ObjectId>;
+  profiles: Array<Types.ObjectId>;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -27,13 +28,26 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
-  },
-  // The date the user joined
-  dateJoined: {
-    type: Date,
-    required: true
   }
+}, {
+  toObject: { virtuals: true, versionKey: false },
+  toJSON: { virtuals: true, versionKey: false }
 });
+
+// virtual population
+// Auto-populate User.following with any Follow relationships associated with this User such that User._id === Follow.follower._id
+UserSchema.virtual('followers', {
+  ref: 'Follow',
+  localField: '_id',
+  foreignField: 'followerId'
+})
+
+// Auto-populate User.profiles with any Profile instances tied to this account
+UserSchema.virtual('profiles', {
+  ref: 'Profile',
+  localField: '_id',
+  foreignField: 'account_id'
+})
 
 const UserModel = model<User>('User', UserSchema);
 export default UserModel;

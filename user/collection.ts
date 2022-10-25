@@ -1,4 +1,5 @@
 import type {HydratedDocument, Types} from 'mongoose';
+import ProfileCollection from '../profile/collection';
 import type {User} from './model';
 import UserModel from './model';
 
@@ -19,9 +20,8 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>>} - The newly created user
    */
   static async addOne(username: string, password: string): Promise<HydratedDocument<User>> {
-    const dateJoined = new Date();
-
-    const user = new UserModel({username, password, dateJoined});
+    const privateLike = false;
+    const user = new UserModel({username, password, privateLike});
     await user.save(); // Saves user to MongoDB
     return user;
   }
@@ -59,7 +59,7 @@ class UserCollection {
       password
     });
   }
-
+  
   /**
    * Update user's information
    *
@@ -88,6 +88,9 @@ class UserCollection {
    * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
    */
   static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
+    // delete corresponding profiles to userId
+    await ProfileCollection.deleteMany(userId);
+
     const user = await UserModel.deleteOne({_id: userId});
     return user !== null;
   }

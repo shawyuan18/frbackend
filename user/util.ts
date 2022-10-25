@@ -1,12 +1,12 @@
 import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
 import type {User} from './model';
+import { isUsernameNotAlreadyInUse } from './middleware';
 
 // Update this if you add a property to the User type!
 type UserResponse = {
   _id: string;
   username: string;
-  dateJoined: string;
 };
 
 /**
@@ -35,7 +35,6 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    dateJoined: formatDate(user.dateJoined)
   };
 };
 
