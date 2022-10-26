@@ -51,7 +51,9 @@ const formsAndHandlers = {
   'view-all-bookmarks': viewAllBookmarks,
   'view-bookmarks-by-profile': viewProfileBookmarks,
   'search-bookmarks': searchBookmarks,
-  'delete-bookmark': deleteBookmark
+  'delete-bookmark': deleteBookmark,
+  'view-freet': viewFreet, // Add to formsAndHandlers to interact with on frontend
+  'create-tag': createTag,
 };
 
 // Attach handlers to forms
